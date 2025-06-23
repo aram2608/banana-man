@@ -12,6 +12,8 @@ function init_globals()
     speed = 3,
     w = 8,
     h = 8,
+    onground=false,
+    coyote_timer=0,
     }
   
     -- game state
