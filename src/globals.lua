@@ -1,5 +1,6 @@
 function init_globals()
     -- player
+    p = {
     x = 40
     y = 100
     vy = 0
@@ -8,6 +9,7 @@ function init_globals()
     dash_timer = 0
     dash_speed = 4
     speed = 1
+    }
   
     -- game state
     lives = 3
