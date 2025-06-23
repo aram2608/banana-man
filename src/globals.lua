@@ -1,14 +1,17 @@
 function init_globals()
     -- player
     p = {
-    x = 40
-    y = 100
-    vy = 0
-    jumps = 0
-    max_jumps = 2
-    dash_timer = 0
-    dash_speed = 4
-    speed = 1
+    x = 40,
+    y = 100,
+    vy = 0,
+    vx=0,
+    jumps = 0,
+    max_jumps = 2,
+    dash_timer = 0,
+    dash_speed = 4,
+    speed = 3,
+    w = 8,
+    h = 8,
     }
   
     -- game state
