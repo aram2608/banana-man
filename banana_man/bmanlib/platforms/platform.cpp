@@ -1,13 +1,10 @@
 #include "platforms/platform.hpp"
 #include "platform.hpp"
 
-Platform::Platform() {
-    pos = Vector2{100, 200};
-    size = Vector2{400, 30};
-}
+Platform::Platform(Vector2 pos, Vector2 size) : pos(pos), size(size) {}
 
-void Platform::draw() {
+void Platform::draw() const {
     DrawRectangle(pos.x, pos.y, size.x, size.y, {255, 255, 255, 255});
 }
 
-Rectangle Platform::get_rect() { return {pos.x, pos.y, size.x, size.y}; }
+Rectangle Platform::get_rect() const { return {pos.x, pos.y, size.x, size.y}; }

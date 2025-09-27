@@ -2,6 +2,7 @@ add_library(bmanlib
     bmanlib/bman/bman.cpp
     bmanlib/game/game.cpp
     bmanlib/platforms/platform.cpp
+    bmanlib/platforms/grid.cpp
 )
 
 find_package(raylib 3.0 REQUIRED)

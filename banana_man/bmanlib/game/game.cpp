@@ -1,13 +1,18 @@
 #include "game.hpp"
 
-Game::Game() {
+std::vector<std::string> level = {
+    "............................", "............................",
+    "...........###..............", ".........#####..............",
+    "############################"};
+
+Game::Game() : grid(800, 800, 25) {
     player = BananaMan();
-    platform = Platform();
+    grid.create_map(level);
 }
 
 void Game::draw() {
     player.draw();
-    platform.draw();
+    grid.draw();
 }
 
 void Game::update() {
@@ -16,12 +21,17 @@ void Game::update() {
 }
 
 void Game::check_grounded() {
-    if (CheckCollisionRecs(player.get_rect(), platform.get_rect())) {
-        player.pos.y = platform.pos.y - player.size.y;
-        player.velocity.y = 0.0f;
-        player.grounded = true;
-        player.dj = true;
-    } else {
-        player.grounded = false;
+    player.grounded = false;
+    Rectangle pr = player.get_rect();
+
+    for (auto const& plat : grid.platforms) {
+        Rectangle tr = plat.get_rect();
+        if (CheckCollisionRecs(pr, tr)) {
+            player.pos.y = plat.pos.y - player.size.y;
+            player.velocity.y = 0.0f;
+            player.grounded = true;
+            player.dj = true;
+            pr.y = player.pos.y;
+        }
     }
 }

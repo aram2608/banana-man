@@ -3,15 +3,12 @@
 
 #include <raylib.h>
 
-class Platform {
-  public:
-    Platform();
-    void draw();
-    Rectangle get_rect();
+struct Platform {
+    Platform(Vector2 pos, Vector2 size);
+    void draw() const;
+    Rectangle get_rect() const;
     Vector2 pos;
     Vector2 size;
-
-  private:
 };
 
 #endif

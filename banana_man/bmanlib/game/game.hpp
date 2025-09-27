@@ -2,6 +2,7 @@
 #define GAME_HPP
 
 #include "bman/bman.hpp"
+#include "platforms/grid.hpp"
 #include "platforms/platform.hpp"
 #include <raylib.h>
 
@@ -14,7 +15,7 @@ class Game {
 
   private:
     BananaMan player;
-    Platform platform;
+    Grid grid;
 };
 
 #endif

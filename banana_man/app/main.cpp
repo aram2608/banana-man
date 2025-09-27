@@ -2,15 +2,13 @@
 #include <raylib.h>
 
 int main() {
-    // Hard coded window values w/offest
-    const int off_set = 50;
-    const int window_w = 750;
-    const int window_h = 700;
+    // Hard coded window values
+    const int window_w = 800;
+    const int window_h = 800;
 
     // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
-    InitWindow(window_w + off_set, window_h + (2 * off_set),
-               "C++ - Banana Man");
+    InitWindow(window_w, window_h, "C++ - Banana Man");
     InitAudioDevice();
 
     // Target FPS of 60

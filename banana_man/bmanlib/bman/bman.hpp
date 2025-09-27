@@ -3,8 +3,7 @@
 
 #include <raylib.h>
 
-class BananaMan {
-  public:
+struct BananaMan {
     BananaMan();
     void draw();
     void update();
@@ -17,8 +16,6 @@ class BananaMan {
     Vector2 velocity;
     float gravity;
     float speed;
-
-  private:
     void double_jump();
 };
 
