@@ -26,7 +26,7 @@ class Grid {
     // Method to get maps based on level
     void get_map();
     std::vector<std::vector<int>> test_map();
-    std::vector<std::vector<int>> generate_random_level(int rows, int cols);
+    std::vector<std::vector<int>> generate_random_level();
 
   private:
 };

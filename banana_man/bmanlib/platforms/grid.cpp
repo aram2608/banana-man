@@ -45,7 +45,7 @@ std::vector<std::vector<int>> Grid::test_map() {
 }
 
 // Function to generate random levels
-std::vector<std::vector<int>> Grid::generate_random_level(int rows, int cols) {
+std::vector<std::vector<int>> Grid::generate_random_level() {
     int minRun = 3;
     int maxRun = 7;
     int minGap = 3;

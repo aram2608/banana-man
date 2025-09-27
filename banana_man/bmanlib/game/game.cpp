@@ -7,108 +7,88 @@ Game::Game(int width, int height, int cell_size, Vector2 bman_size)
     spawn_bman();
 }
 
+// Draw items to screen
 void Game::draw() {
     player.draw();
     grid.draw();
 }
 
+// Function to spawn the banana man
 void Game::spawn_bman() {
     // Get get the first platforms rectangle
     Rectangle first_platform = grid.platforms[0].get_rect();
     // We then spawn the play slightly to the right of the first platform
     // and we subtract the players heigh to make sure we spawn on top
-    player.pos = Vector2{first_platform.x + 20, first_platform.y - player.size.y};
+    player.pos =
+        Vector2{first_platform.x + 20, first_platform.y - player.size.y};
 }
 
+// Method to update game state
 void Game::update() {
     player.update();
     resolve_platform_collisions();
 }
 
+// Function to resolve platform collisions
 void Game::resolve_platform_collisions() {
+    // We start off by assuming the player is not grounded
     player.grounded = false;
-    Rectangle pr = player.get_rect();
 
+    // We iterate through all the platforms in the grid
     for (auto &plat : grid.platforms) {
+        // We retireve the player and platform positions
         Rectangle pr = player.get_rect();
         Rectangle tr = plat.get_rect();
 
-        if (!CheckCollisionRecs(pr, tr))
+        // We check for collisions and continue to the next platform if there are none
+        if (!CheckCollisionRecs(pr, tr)) {
             continue;
+        }
 
-        // Decide the collision side using where we WERE last frame.
+        // Decide the collision side using our previous position
         Rectangle prev = player.get_prev_rect();
 
         // Edges (previous frame)
-        float prevLeft = prev.x;
-        float prevRight = prev.x + prev.width;
-        float prevTop = prev.y;
-        float prevBottom = prev.y + prev.height;
+        float prev_left = prev.x;
+        float prev_right = prev.x + prev.width;
+        float prev_top = prev.y;
+        float prev_bottom = prev.y + prev.height;
 
         // Tile edges
-        float tLeft = tr.x;
-        float tRight = tr.x + tr.width;
-        float tTop = tr.y;
-        float tBottom = tr.y + tr.height;
+        float t_left = tr.x;
+        float t_right = tr.x + tr.width;
+        float t_top = tr.y;
+        float t_bottom = tr.y + tr.height;
 
-        // We came from above?
-        if (prevBottom <= tTop && player.velocity.y > 0) {
-            player.pos.y = tTop - player.size.y; // land on top
+        // We check collisions when the player lands on a tile
+        if (prev_bottom <= t_top && player.velocity.y > 0) {
+            player.pos.y = t_top - player.size.y;
             player.velocity.y =
                 -player.velocity.y * player.restitution; // 0 = stop
             player.grounded = true;
             continue;
         }
 
-        // We came from below? (head-bonk)
-        if (prevTop >= tBottom && player.velocity.y < 0) {
-            player.pos.y = tBottom;
+        // We check collisions for head bonks
+        if (prev_top >= t_bottom && player.velocity.y < 0) {
+            player.pos.y = t_bottom;
             player.velocity.y = -player.velocity.y * player.restitution;
             continue;
         }
 
         // Otherwise it’s a side collision.
         // From left → hit tile’s left side
-        if (prevRight <= tLeft && player.velocity.x > 0) {
-            player.pos.x = tLeft - player.size.x;
+        if (prev_right <= t_left && player.velocity.x > 0) {
+            player.pos.x = t_left - player.size.x;
             player.velocity.x = -player.velocity.x * player.restitution;
             continue;
         }
 
         // From right → hit tile’s right side
-        if (prevLeft >= tRight && player.velocity.x < 0) {
-            player.pos.x = tRight;
+        if (prev_left >= t_right && player.velocity.x < 0) {
+            player.pos.x = t_right;
             player.velocity.x = -player.velocity.x * player.restitution;
             continue;
-        }
-
-        // Fallback: if we can’t classify (e.g., starting inside), push out by
-        // minimum overlap
-        float overlapLeft = (pr.x + pr.width) - tLeft;
-        float overlapRight = tRight - pr.x;
-        float overlapTop = (pr.y + pr.height) - tTop;
-        float overlapBottom = tBottom - pr.y;
-
-        float minH = std::min(overlapLeft, overlapRight);
-        float minV = std::min(overlapTop, overlapBottom);
-
-        if (minH < minV) {
-            // resolve horizontally
-            if (overlapLeft < overlapRight) {
-                player.pos.x -= overlapLeft;
-            } else {
-                player.pos.x += overlapRight;
-            }
-            player.velocity.x = -player.velocity.x * player.restitution;
-        } else {
-            // resolve vertically
-            if (overlapTop < overlapBottom) {
-                player.pos.y -= overlapTop; // push up
-                player.grounded = true;
-            } else {
-                player.pos.y += overlapBottom; // push down
-            }
-            player.velocity.y = -player.velocity.y * player.restitution;
         }
     }
 }
