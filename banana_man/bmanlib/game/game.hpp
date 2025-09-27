@@ -10,6 +10,7 @@ class Game {
   public:
     Game(int width, int height, int cell_size, Vector2 bman_size);
     void draw();
+    void spawn_bman();
     void update();
     void resolve_platform_collisions();
     int width;

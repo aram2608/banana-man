@@ -4,11 +4,20 @@ Game::Game(int width, int height, int cell_size, Vector2 bman_size)
     : width(width), height(height), cell_size(cell_size), bman_size(bman_size),
       player(bman_size), grid(width, height, 25, player.size.y) {
     grid.create_map();
+    spawn_bman();
 }
 
 void Game::draw() {
     player.draw();
     grid.draw();
+}
+
+void Game::spawn_bman() {
+    // Get get the first platforms rectangle
+    Rectangle first_platform = grid.platforms[0].get_rect();
+    // We then spawn the play slightly to the right of the first platform
+    // and we subtract the players heigh to make sure we spawn on top
+    player.pos = Vector2{first_platform.x + 20, first_platform.y - player.size.y};
 }
 
 void Game::update() {
