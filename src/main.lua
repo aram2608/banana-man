@@ -10,11 +10,15 @@ function _init()
   
   function _draw()
     cls()
+    camera(p.x - 64, p.y - 64) -- center player
+
+    local cel_x = flr(p.x / 8) - 8
+    local cel_y = flr(p.y / 8) - 8
+    map(cel_x, cel_y, cel_x * 8, cel_y * 8, 16, 16)
+    
+    print("lives: "..lives, 1, 1, 7)
     draw_peels()
     draw_player()
-    camera(p.x - 64, p.y - 64) -- center player on screen
-    map(0, 0, 0, 0, 128, 32)   -- draw whole map (or just a slice later)
-    print("lives: "..lives, 1, 1, 7)
     if dead then print("game over", 40, 64, 8) end
   end
   
