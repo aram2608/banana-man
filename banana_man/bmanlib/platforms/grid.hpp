@@ -2,6 +2,9 @@
 #define GRID_HPP
 
 #include "platforms/platform.hpp"
+#include <algorithm>
+#include <ctime>
+#include <random>
 #include <raylib.h>
 #include <vector>
 
@@ -16,9 +19,11 @@ class Grid {
     int cell_size;
     std::vector<Platform> platforms;
     // Method to create map
-    void create_map(const std::vector<std::string> &layout);
+    void create_map();
     // Method to draw platforms
     void draw();
+    std::vector<std::vector<int>> generate_random_level(int rows, int cols);
+    std::vector<std::vector<int>> level;
 
   private:
 };

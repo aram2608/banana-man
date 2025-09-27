@@ -11,7 +11,7 @@ class Game {
     Game();
     void draw();
     void update();
-    void check_grounded();
+    void resolve_platform_collisions();
 
   private:
     BananaMan player;
