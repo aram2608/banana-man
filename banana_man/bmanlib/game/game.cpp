@@ -11,6 +11,10 @@ Game::Game(int width, int height, int cell_size, Vector2 bman_size)
 void Game::draw() {
     player.draw();
     grid.draw();
+    // Iterate over vector of lasers and draw
+    for (auto &laser : player.blasters) {
+        laser.draw();
+    }
 }
 
 // Function to spawn the banana man
@@ -27,6 +31,25 @@ void Game::spawn_bman() {
 void Game::update() {
     player.update();
     resolve_platform_collisions();
+    // Iterate over vector of lasers and update positions
+    for (auto &laser : player.blasters) {
+        laser.update();
+    }
+    delete_laser();
+}
+
+// Function to delete lasers to protect memory resources
+void Game::delete_laser() {
+    // Iterator to loop through the vector and remove any inactive ship lasers
+    for (auto it = player.blasters.begin(); it != player.blasters.end();) {
+        if (!it->active) {
+            // Erase returns an iterator pointing to the next item in the vector
+            // this keep the iterator going
+            it = player.blasters.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }
 
 // Function to resolve platform collisions
@@ -40,7 +63,8 @@ void Game::resolve_platform_collisions() {
         Rectangle pr = player.get_rect();
         Rectangle tr = plat.get_rect();
 
-        // We check for collisions and continue to the next platform if there are none
+        // We check for collisions and continue to the next platform if there
+        // are none
         if (!CheckCollisionRecs(pr, tr)) {
             continue;
         }

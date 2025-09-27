@@ -7,6 +7,7 @@ BananaMan::BananaMan(Vector2 size) : size(size) {
     max_speed = 200.0f;
     accel_ground = 1800.0f;
     decel_ground = 2000.0f;
+    prev_dir = 1;
 
     // Jumping
     grounded = false;
@@ -34,6 +35,7 @@ void BananaMan::draw() {
                   {255, 225, 53, 255});
 }
 
+// Function to update the banana man
 void BananaMan::update() {
     float dt = GetFrameTime();
     prev_pos = pos;
@@ -79,6 +81,16 @@ void BananaMan::keyboard(float dt) {
     }
     if (IsKeyDown(KEY_RIGHT)) {
         dir += 1;
+    }
+
+    // Update facing direction if input is given
+    if (dir != 0) {
+        prev_dir = dir;
+    }
+
+    // Fire lasers
+    if (IsKeyPressed(KEY_SPACE)) {
+        fire_laser(prev_dir);
     }
 
     // Start slide:
@@ -153,4 +165,11 @@ Rectangle BananaMan::get_rect() { return {pos.x, pos.y, size.x, size.y}; }
 
 Rectangle BananaMan::get_prev_rect() {
     return {prev_pos.x, prev_pos.y, size.x, size.y};
+}
+
+void BananaMan::fire_laser(int dir) {
+    if (GetTime() - fire_time >= 0.35) {
+        blasters.push_back(BananaBlaster({pos.x + size.x / 2 + (2 * prev_dir), pos.y}, 6 * dir));
+        fire_time = GetTime();
+    }
 }

@@ -12,6 +12,7 @@ class Game {
     void draw();
     void spawn_bman();
     void update();
+    void delete_laser();
     void resolve_platform_collisions();
     int width;
     int height;
