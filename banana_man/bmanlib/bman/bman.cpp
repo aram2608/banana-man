@@ -1,8 +1,7 @@
 #include "bman/bman.hpp"
 
-BananaMan::BananaMan() {
+BananaMan::BananaMan(Vector2 size) : size(size) {
     pos = Vector2{100, 100};
-    size = Vector2{30, 30};
     velocity = Vector2{0, 0};
     gravity = 900.0f;
     grounded = false;

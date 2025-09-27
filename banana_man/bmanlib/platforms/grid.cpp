@@ -1,14 +1,15 @@
 #include "platforms/grid.hpp"
 #include "grid.hpp"
 
-Grid::Grid(int width, int height, int cell_size)
+Grid::Grid(int width, int height, int cell_size, int banana_height)
     // We calculate the total rows and cols by dividing the height and width by
     // cell_size
-    : rows(height / cell_size), cols(width / cell_size), cell_size(cell_size) {}
+    : rows(height / cell_size), cols(width / cell_size), cell_size(cell_size),
+      banana_height(banana_height) {}
 
 // Function to create a grid of the map
 void Grid::create_map() {
-    std::vector<std::vector<int>> layout = generate_random_level(rows, cols);
+    std::vector<std::vector<int>> layout = test_map();
     // Pre-reserve approximate number of platforms for performance
     platforms.reserve(rows * cols / 4);
 
@@ -28,27 +29,36 @@ void Grid::create_map() {
     }
 }
 
-// Function to iterate over each platform and draw it
+// Function to iterate over each platform and draw it to screen
 void Grid::draw() {
     for (auto const &p : platforms) {
         p.draw();
     }
 }
 
+std::vector<std::vector<int>> Grid::test_map() {
+    // We create a dummy map full of 0s, with one missing row
+    std::vector<std::vector<int>> map_1(rows - 1, std::vector<int>(cols, 0));
+    // The final row we fill with ones as our floor
+    map_1.push_back(std::vector<int>(cols, 1));
+    return map_1;
+}
+
 // Function to generate random levels
 std::vector<std::vector<int>> Grid::generate_random_level(int rows, int cols) {
-    int maxGap = 2;
-    int maxRise = 1;
-    int maxDrop = 2;
     int minRun = 3;
     int maxRun = 7;
-    bool solidFloor = true;
-    // We create a seed using the current time
-    unsigned seed = (unsigned)std::time(nullptr);
-    // We create a vector of vectors to represent our level
-    std::vector<std::vector<int>> lvl(rows, std::vector<int>(cols, 0));
+    int minGap = 3;
+    int maxGap = 6;
+    int maxRise = 2;
+    int maxDrop = 2;
+    int bands = 5;
+    int stepEveryCols = 6;
+    float jumpVel = -350.0f;
+    float gravity = 900.0f;
 
-    // We create our random number generator from our seed
+    unsigned seed = (unsigned)std::time(nullptr);
+    std::vector<std::vector<int>> lvl(rows, std::vector<int>(cols, 0));
     std::mt19937 rng(seed);
 
     auto pick = [&](int a, int b) {
@@ -56,7 +66,13 @@ std::vector<std::vector<int>> Grid::generate_random_level(int rows, int cols) {
         return d(rng);
     };
 
-    // Helper to place a horizontal run at y across [x0, x1] inclusive
+    // top clearance from physics: h = v^2 / (2g)
+    float maxJumpPx = (jumpVel * jumpVel) / (2.0f * gravity);
+    int topClearRows =
+        std::max(1, (int)std::ceil((banana_height + maxJumpPx) / cell_size));
+    int yMin = topClearRows; // never place above this
+    int yMax = rows - 2;     // keep a pixel row margin above bottom
+
     auto place_run = [&](int y, int x0, int x1) {
         x0 = std::max(0, x0);
         x1 = std::min(cols - 1, x1);
@@ -65,74 +81,81 @@ std::vector<std::vector<int>> Grid::generate_random_level(int rows, int cols) {
         for (int x = x0; x <= x1; ++x)
             lvl[y][x] = 1;
     };
+    auto place_ladder = [&](int x, int yTop, int yBot) {
+        yTop = std::max(0, yTop);
+        yBot = std::min(rows - 1, yBot);
+        for (int y = yTop; y <= yBot; ++y)
+            lvl[y][x] = 2;
+    };
 
-    // Start near the bottom
-    int y = rows - 3; // playable lane (leave 1 row above ground)
-    int x = 1;
+    // Start from near bottom, respect clearance
+    int curY = std::clamp(rows - 3, yMin, yMax);
+    int startX = 1; // first band goes left→right
+    bool leftToRight = true;
 
-    // Optional base floor
-    if (solidFloor) {
-        for (int c = 0; c < cols; ++c)
-            lvl[rows - 1][c] = 1;
-    }
+    for (int b = 0; b < bands; ++b) {
+        int x = leftToRight ? startX : cols - 2;
+        int xEnd = leftToRight ? (cols - 2) : 1;
+        int dir = leftToRight ? +1 : -1;
 
-    // Build the main path across the level
-    while (x < cols - 2) {
-        // 1) Flat segment
-        int run = pick(minRun, maxRun);
-        place_run(y, x, std::min(x + run - 1, cols - 2));
-        x += run;
+        int stepCounter = 0;
+        int y = curY;
 
-        if (x >= cols - 2)
-            break;
-
-        // 2) Pick a transition: gap, step up, or step down (biased toward
-        // flat/gap)
-        enum Action { GAP, STEP_UP, STEP_DOWN };
-        Action a;
-        int r = pick(0, 9);
-        if (r < 5)
-            a = GAP; // 50%
-        else if (r < 7)
-            a = STEP_UP; // 20%
-        else
-            a = STEP_DOWN; // 30%
-
-        if (a == GAP) {
-            int gap = pick(1, maxGap);
-            // leave 'gap' empty tiles
-            x += gap;
-            // small safety: add a single landing pillar if we’re near edges
-            if (x < cols - 2) {
-                // nothing to do; next loop lays the landing run
+        // draw a sloped band with occasional gaps
+        while ((leftToRight && x <= xEnd) || (!leftToRight && x >= xEnd)) {
+            // optional gap
+            if (pick(0, 99) < 18) { // ~18% chance to insert a gap
+                int gap = pick(minGap, maxGap);
+                x += dir * gap;
+                stepCounter += gap;
+                // keep bounds
+                if (leftToRight) {
+                    if (x > xEnd)
+                        break;
+                } else {
+                    if (x < xEnd)
+                        break;
+                }
+            } else {
+                // place a short flat run (2–4 tiles) at current y
+                int run = pick(2, 4);
+                for (int i = 0; i < run; ++i) {
+                    if (x < 1 || x > cols - 2)
+                        break;
+                    if (y < yMin)
+                        y = yMin;
+                    if (y > yMax)
+                        y = yMax;
+                    lvl[y][x] = 1;
+                    x += dir;
+                    stepCounter++;
+                }
             }
-        } else if (a == STEP_UP) {
-            int rise = pick(1, maxRise);
-            y = std::max(1, y - rise); // move lane up
-            // Add a "stair" pillar under the step to make it look intentional
-            // (optional)
-            lvl[y][x] = 1;
-        } else { // STEP_DOWN
-            int drop = pick(1, maxDrop);
-            y = std::min(rows - 3, y + drop); // move lane down
-            // Optionally add a small filler after drops to avoid awkward gaps
-            lvl[y][x] = 1;
-        }
-    }
 
-    // 3) Decorate (optional): sprinkle short side platforms above/below the
-    // path
-    std::uniform_int_distribution<int> chance(0, 99);
-    for (int c = 2; c < cols - 2; ++c) {
-        for (int r2 = 1; r2 < rows - 2; ++r2) {
-            if (lvl[r2][c] == 1 && chance(rng) < 12) {
-                // Add a tiny ledge above or below
-                int dy = (chance(rng) < 50) ? -2 : +2;
-                int y2 = std::clamp(r2 + dy, 1, rows - 3);
-                int len = pick(2, 4);
-                place_run(y2, c, std::min(c + len, cols - 2));
+            // step slope up every N columns
+            if (stepCounter >= stepEveryCols) {
+                stepCounter = 0;
+                y = std::max(yMin, y - 1); // slope upwards one tile
             }
         }
+
+        // end-of-band position (last valid x within bounds)
+        int endX = std::clamp(x - dir, 1, cols - 2);
+        int endY = y;
+
+        // place a ladder up to next band (guarantee ascent)
+        int nextY = std::max(yMin, endY - 3); // climb ~3 rows (tweakable)
+        place_ladder(endX, nextY, endY);
+
+        // next band starts from opposite side, a bit higher
+        curY = std::max(yMin, endY - 3);
+        leftToRight = !leftToRight;
+        startX = leftToRight ? 1 : cols - 2;
     }
+
+    // Optional: a small goal platform near the top center
+    int goalY = std::max(yMin, curY - 2);
+    place_run(goalY, cols / 2 - 3, cols / 2 + 3);
+
     return lvl;
 }

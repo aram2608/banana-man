@@ -5,7 +5,7 @@
 #include <raylib.h>
 
 struct BananaMan {
-    BananaMan();
+    BananaMan(Vector2 size);
     void draw();
     void update();
     void keyboard(float dt);

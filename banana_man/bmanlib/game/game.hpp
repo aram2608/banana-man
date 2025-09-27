@@ -8,10 +8,14 @@
 
 class Game {
   public:
-    Game();
+    Game(int width, int height, int cell_size, Vector2 bman_size);
     void draw();
     void update();
     void resolve_platform_collisions();
+    int width;
+    int height;
+    int cell_size;
+    Vector2 bman_size;
 
   private:
     BananaMan player;

@@ -1,7 +1,8 @@
 #include "game.hpp"
 
-Game::Game() : grid(800, 800, 25) {
-    player = BananaMan();
+Game::Game(int width, int height, int cell_size, Vector2 bman_size)
+    : width(width), height(height), cell_size(cell_size), bman_size(bman_size),
+      player(bman_size), grid(width, height, 25, player.size.y) {
     grid.create_map();
 }
 

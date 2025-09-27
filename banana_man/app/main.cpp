@@ -1,19 +1,19 @@
+#include "../bmanlib/game/configs.hpp"
 #include "../bmanlib/game/game.hpp"
 #include <raylib.h>
 
+using namespace BManConfigs;
+
 int main() {
-    // Hard coded window values
-    const int window_w = 800;
-    const int window_h = 800;
 
     // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
-    InitWindow(window_w, window_h, "C++ - Banana Man");
+    InitWindow(WINDOW_WIDTH, WINDOW_WIDTH, "C++ - Banana Man");
     InitAudioDevice();
 
     // Target FPS of 60
     SetTargetFPS(60);
-    Game game;
+    Game game(WINDOW_WIDTH, WINDOW_HEIGHT, CELL_SIZE, BANANA_SIZE);
 
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
