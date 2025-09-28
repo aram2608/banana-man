@@ -69,10 +69,12 @@ void Game::delete_blaster() {
 
 // Function to catch blaster collisions
 void Game::resolve_blaster_collisions() {
-    // We need to iterate over both the ants and the blasters to catch collisions
-    for (auto ant = ants.begin(); ant != ants.end(); ) {
+    // We need to iterate over both the ants and the blasters to catch
+    // collisions
+    for (auto ant = ants.begin(); ant != ants.end();) {
         bool ant_hit = false;
-        for (auto blaster = player.blasters.begin(); blaster != player.blasters.end(); ) {
+        for (auto blaster = player.blasters.begin();
+             blaster != player.blasters.end();) {
             if (CheckCollisionRecs(ant->get_rect(), blaster->get_rect())) {
                 // We erase the blaster and update the iterator
                 blaster = player.blasters.erase(blaster);

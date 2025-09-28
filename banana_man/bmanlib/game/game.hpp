@@ -28,9 +28,9 @@ class Game {
     int cell_size;
     Vector2 bman_size;
     Vector2 ant_size;
+    BananaMan player;
 
   private:
-    BananaMan player;
     Grid grid;
     std::vector<Ants> ants;
 };
