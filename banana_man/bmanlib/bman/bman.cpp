@@ -125,7 +125,7 @@ void BananaMan::keyboard(float dt) {
         }
         // We ignore run input while sliding
     } else {
-        // FOr ground control we use simple acceleration vs decel movement
+        // For ground control we use simple acceleration vs decel movement
         if (dir != 0) {
             velocity.x =
                 /*
@@ -170,7 +170,7 @@ Rectangle BananaMan::get_prev_rect() {
 void BananaMan::fire_laser(int dir) {
     if (GetTime() - fire_time >= 0.35) {
         blasters.push_back(BananaBlaster(
-            {pos.x + size.x / 2 + (2 * prev_dir), pos.y + (size.y / 2)},
+            {pos.x + size.x / 2 + (2 * prev_dir), pos.y + (size.y / 2)}, pos.x,
             6 * dir));
         fire_time = GetTime();
     }

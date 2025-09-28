@@ -8,6 +8,7 @@ namespace BManConfigs {
 const int WINDOW_WIDTH = 1200;
 const int WINDOW_HEIGHT = 800;
 const int CELL_SIZE = 25;
+const int MAP_SIZE = 2;
 
 // BManParameters
 const Vector2 BANANA_SIZE = Vector2{30, 40};

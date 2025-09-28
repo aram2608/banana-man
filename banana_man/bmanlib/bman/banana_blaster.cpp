@@ -1,7 +1,7 @@
 #include "bman/banana_blaster.hpp"
 
-BananaBlaster::BananaBlaster(Vector2 position, int speed)
-    : position(position), speed(speed) {
+BananaBlaster::BananaBlaster(Vector2 position, int fire_pos, int speed)
+    : position(position), fire_pos(fire_pos), speed(speed) {
     active = true;
 }
 
@@ -24,9 +24,11 @@ Rectangle BananaBlaster::get_rect() {
 // Function to update BananaBlaster position
 void BananaBlaster::update() {
     position.x += speed;
-    // Inactivates lasers given y_coords, catches both ship and alien lasers
+    // Inactivates lasers given y_coords
     if (active) {
-        if (position.x > GetScreenWidth() || position.x < 0) {
+        // Deactivate if the laser has traveled more than a certain distance from fire_pos
+        const int max_distance = 500;
+        if (std::abs(position.x - fire_pos) > max_distance) {
             active = false;
         }
     }

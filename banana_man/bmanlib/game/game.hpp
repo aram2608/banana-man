@@ -3,8 +3,7 @@
 
 #include "bman/bman.hpp"
 #include "enemies/ants.hpp"
-#include "platforms/grid.hpp"
-#include "platforms/platform.hpp"
+#include "map/map.hpp"
 #include <cmath>
 #include <random>
 #include <raylib.h>
@@ -12,9 +11,11 @@
 
 class Game {
   public:
-    Game(int width, int height, int cell_size, Vector2 bman_size);
-    void draw();
+    Game(int map_size, int width, int height, int cell_size, Vector2 bman_size);
+    void draw_world();
+    void draw_screen();
     void spawn_bman();
+    void init_cam();
     void update();
     void draw_blasters();
     void update_blasters();
@@ -23,15 +24,17 @@ class Game {
     void resolve_platform_collisions();
     void make_ants();
     void draw_ants();
+    int map_size;
     int width;
     int height;
     int cell_size;
     Vector2 bman_size;
     Vector2 ant_size;
     BananaMan player;
+    Camera2D camera;
 
   private:
-    Grid grid;
+    Map map;
     std::vector<Ants> ants;
 };
 

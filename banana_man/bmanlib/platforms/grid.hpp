@@ -18,13 +18,12 @@ class Grid {
     // Predefined cell size as an integer
     int cell_size;
     int banana_height;
+    int width;
     std::vector<Platform> platforms;
     // Method to create map
-    void create_map();
+    std::vector<Platform> create_grid(int map_size);
     // Method to draw platforms
     void draw();
-    // Method to get maps based on level
-    void get_map();
     std::vector<std::vector<int>> test_map();
     std::vector<std::vector<int>> generate_random_level();
 
