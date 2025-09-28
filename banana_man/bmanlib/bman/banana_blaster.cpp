@@ -26,7 +26,8 @@ void BananaBlaster::update() {
     position.x += speed;
     // Inactivates lasers given y_coords
     if (active) {
-        // Deactivate if the laser has traveled more than a certain distance from fire_pos
+        // Deactivate if the laser has traveled more than a certain distance
+        // from fire_pos
         const int max_distance = 500;
         if (std::abs(position.x - fire_pos) > max_distance) {
             active = false;

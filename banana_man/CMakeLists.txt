@@ -3,7 +3,6 @@ add_library(bmanlib
     bmanlib/bman/banana_blaster.cpp
     bmanlib/game/game.cpp
     bmanlib/platforms/platform.cpp
-    bmanlib/platforms/grid.cpp
     bmanlib/enemies/ants.cpp
     bmanlib/map/map.cpp
 )

@@ -22,6 +22,7 @@ class Game {
     void delete_blaster();
     void resolve_blaster_collisions();
     void resolve_platform_collisions();
+    int chunk_lookup();
     void make_ants();
     void draw_ants();
     int map_size;
