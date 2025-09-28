@@ -4,7 +4,9 @@
 #include <raylib.h>
 
 struct Ants {
-    Ants(Vector2 pos);
+    Ants(Vector2 pos, Vector2 size);
+    void draw();
+    Rectangle get_rect();
 
     Vector2 pos;
     Vector2 size;

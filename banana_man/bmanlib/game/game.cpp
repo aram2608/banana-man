@@ -3,18 +3,18 @@
 Game::Game(int width, int height, int cell_size, Vector2 bman_size)
     : width(width), height(height), cell_size(cell_size), bman_size(bman_size),
       player(bman_size), grid(width, height, 25, player.size.y) {
+    ant_size = Vector2{30, 30};
     grid.create_map();
     spawn_bman();
+    make_ants();
 }
 
 // Draw items to screen
 void Game::draw() {
     player.draw();
     grid.draw();
-    // Iterate over vector of lasers and draw
-    for (auto &laser : player.blasters) {
-        laser.draw();
-    }
+    draw_ants();
+    draw_blasters();
 }
 
 // Function to spawn the banana man
@@ -30,17 +30,32 @@ void Game::spawn_bman() {
 // Method to update game state
 void Game::update() {
     player.update();
+    resolve_blaster_collisions();
     resolve_platform_collisions();
-    // Iterate over vector of lasers and update positions
-    for (auto &laser : player.blasters) {
-        laser.update();
+    update_blasters();
+    delete_blaster();
+    if (ants.size() == 0) {
+        make_ants();
     }
-    delete_laser();
 }
 
-// Function to delete lasers to protect memory resources
-void Game::delete_laser() {
-    // Iterator to loop through the vector and remove any inactive ship lasers
+void Game::draw_blasters() {
+    // Iterate over vector of blasters and draw
+    for (auto &blaster : player.blasters) {
+        blaster.draw();
+    }
+}
+
+void Game::update_blasters() {
+    // Iterate over vector of blasters and update positions
+    for (auto &blaster : player.blasters) {
+        blaster.update();
+    }
+}
+
+// Function to delete blasters to protect memory resources
+void Game::delete_blaster() {
+    // Iterator to loop through the vector and remove any inactive blasters
     for (auto it = player.blasters.begin(); it != player.blasters.end();) {
         if (!it->active) {
             // Erase returns an iterator pointing to the next item in the vector
@@ -48,6 +63,30 @@ void Game::delete_laser() {
             it = player.blasters.erase(it);
         } else {
             ++it;
+        }
+    }
+}
+
+// Function to catch blaster collisions
+void Game::resolve_blaster_collisions() {
+    // We need to iterate over both the ants and the blasters to catch collisions
+    for (auto ant = ants.begin(); ant != ants.end(); ) {
+        bool ant_hit = false;
+        for (auto blaster = player.blasters.begin(); blaster != player.blasters.end(); ) {
+            if (CheckCollisionRecs(ant->get_rect(), blaster->get_rect())) {
+                // We erase the blaster and update the iterator
+                blaster = player.blasters.erase(blaster);
+                // We can then mark the ant for removal
+                ant_hit = true;
+            } else {
+                ++blaster;
+            }
+        }
+        // We can now remove the ant if it is marked
+        if (ant_hit) {
+            ant = ants.erase(ant);
+        } else {
+            ++ant;
         }
     }
 }
@@ -114,5 +153,53 @@ void Game::resolve_platform_collisions() {
             player.velocity.x = -player.velocity.x * player.restitution;
             continue;
         }
+    }
+}
+
+void Game::make_ants() {
+    // We create a random device to seed our Merssene Twister object
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    // Every number within the specified range has an equal
+    // probability of being generated
+    // 0 is our lower bound and 1 is our upper bound
+    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
+
+    // Minimum distance from player
+    const float min_distance = 200.0f;
+
+    // We iterate over the platforms
+    for (auto &plat : grid.platforms) {
+        // 30% chance to spawn an ant on this platform
+        if (chance(gen) < 0.3f) {
+            Rectangle plat_rect = plat.get_rect();
+            // We pick a random x position on the platform
+            std::uniform_real_distribution<float> x_dist(
+                plat_rect.x, plat_rect.x + plat_rect.width - ant_size.x);
+
+            // We set the x distance to a randomly generated value found in the
+            // platform
+            Vector2 ant_pos = {x_dist(gen), plat_rect.y - ant_size.y};
+
+            // We calculate the number of pixels between the ant and the player
+            // in both the x and y coords
+            float dx = ant_pos.x - player.pos.x;
+            float dy = ant_pos.y - player.pos.y;
+            // We can then check the distance by finding the square root of the
+            // calculated dx and dy squared
+            float dist = std::sqrt((dx * dx) + (dy * dy));
+
+            // If the ant is far away enough we can create it
+            if (dist >= min_distance) {
+                ants.emplace_back(ant_pos, ant_size);
+            }
+        }
+    }
+}
+
+// Small helper to draw ants
+void Game::draw_ants() {
+    for (auto &ant : ants) {
+        ant.draw();
     }
 }

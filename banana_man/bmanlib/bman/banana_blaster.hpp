@@ -14,7 +14,7 @@ struct BananaBlaster {
     Rectangle get_rect();
     bool active;
     Vector2 position;
-    int     speed;
+    int speed;
 };
 
 #endif

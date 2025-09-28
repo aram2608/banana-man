@@ -89,7 +89,7 @@ void BananaMan::keyboard(float dt) {
     }
 
     // Fire lasers
-    if (IsKeyPressed(KEY_SPACE)) {
+    if (IsKeyPressed(KEY_F)) {
         fire_laser(prev_dir);
     }
 
@@ -169,7 +169,9 @@ Rectangle BananaMan::get_prev_rect() {
 
 void BananaMan::fire_laser(int dir) {
     if (GetTime() - fire_time >= 0.35) {
-        blasters.push_back(BananaBlaster({pos.x + size.x / 2 + (2 * prev_dir), pos.y}, 6 * dir));
+        blasters.push_back(BananaBlaster(
+            {pos.x + size.x / 2 + (2 * prev_dir), pos.y + (size.y / 2)},
+            6 * dir));
         fire_time = GetTime();
     }
 }

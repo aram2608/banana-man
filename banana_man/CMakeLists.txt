@@ -4,6 +4,7 @@ add_library(bmanlib
     bmanlib/game/game.cpp
     bmanlib/platforms/platform.cpp
     bmanlib/platforms/grid.cpp
+    bmanlib/enemies/ants.cpp
 )
 
 find_package(raylib 3.0 REQUIRED)
