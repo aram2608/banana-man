@@ -1,5 +1,5 @@
 #include "map/map.hpp"
-#include "map.hpp"
+#include "map/bitmaps.hpp"
 
 Map::Map(int map_size, int width, int height, int cell_size, int banana_height)
     // We calculate the total rows and cols by dividing the height and width by
@@ -10,7 +10,7 @@ Map::Map(int map_size, int width, int height, int cell_size, int banana_height)
 
 // Function to create a grid of the map
 void Map::create_map() {
-    std::vector<std::vector<int>> layout = generate_random_level();
+    std::vector<std::vector<int>> layout = BitMaps::MAP_1;
     // We iterate over the map size to increase the spacing between platforms
     // We iterate over the grid based on the size
     for (int r = 0; r < rows; ++r) {
@@ -109,4 +109,20 @@ std::vector<std::vector<int>> Map::generate_random_level() {
         }
     }
     return lvl;
+}
+
+void Map::make_csv(std::vector<std::vector<int>> &lvl) {
+    std::ofstream file("map.csv");
+    for (int r = 0; r < rows; ++r) {
+        for (int c = 0; c < cols; ++c) {
+            if (r < (int)lvl.size() && c < (int)lvl[r].size()) {
+                file << lvl[r][c];
+                if (c < cols - 1) {
+                    file << ",";
+                }
+            }
+        }
+        file << "\n";
+    }
+    file.close();
 }

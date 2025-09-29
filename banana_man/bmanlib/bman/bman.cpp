@@ -32,7 +32,7 @@ BananaMan::BananaMan(Vector2 size) : size(size) {
 void BananaMan::draw() {
     // For now we are using a simple rectangle
     DrawRectangle((int)pos.x, (int)pos.y, (int)size.x, (int)size.y,
-                  {255, 225, 53, 255});
+                  Color{255, 225, 53, 255});
 }
 
 // Function to update the banana man

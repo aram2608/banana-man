@@ -29,11 +29,11 @@ void Game::draw_screen() {
 // Function to spawn the banana man
 void Game::spawn_bman() {
     // Get get the first platforms rectangle
-    Rectangle first_platform = map.platforms[0].get_rect();
+    Rectangle first_platform = map.platforms.back().get_rect();
     // We then spawn the play slightly to the right of the first platform
     // and we subtract the players heigh to make sure we spawn on top
     player.pos =
-        Vector2{first_platform.x + 20, first_platform.y - player.size.y};
+        Vector2{first_platform.x - 20, first_platform.y - player.size.y};
 }
 
 // We initialize our camera at the start of the game

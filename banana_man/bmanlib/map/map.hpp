@@ -5,10 +5,10 @@
 #include <algorithm>
 #include <chrono>
 #include <ctime>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <raylib.h>
-#include <thread>
 #include <vector>
 
 class Map {
@@ -30,6 +30,7 @@ class Map {
     void draw();
     std::vector<std::vector<int>> test_map();
     std::vector<std::vector<int>> generate_random_level();
+    void make_csv(std::vector<std::vector<int>> &lvl);
 
   private:
 };
