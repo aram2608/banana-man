@@ -9,7 +9,6 @@ int main() {
     // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
     InitWindow(WINDOW_WIDTH, WINDOW_WIDTH, "C++ - Banana Man");
-    InitAudioDevice();
 
     // Target FPS of 60
     SetTargetFPS(60);
@@ -30,6 +29,5 @@ int main() {
     }
     // Close our game window
     CloseWindow();
-    CloseAudioDevice();
     return 0;
 }

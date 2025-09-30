@@ -2,6 +2,7 @@
 #define GAME_HPP
 
 #include "bman/bman.hpp"
+#include "enemies/antblaster.hpp"
 #include "enemies/ants.hpp"
 #include "map/map.hpp"
 #include <cmath>
@@ -25,6 +26,7 @@ class Game {
     int chunk_lookup();
     void make_ants();
     void draw_ants();
+    void ants_fire();
     int map_size;
     int width;
     int height;
@@ -37,6 +39,7 @@ class Game {
   private:
     Map map;
     std::vector<Ants> ants;
+    std::vector<AntBlaster> a_blasters;
 };
 
 #endif

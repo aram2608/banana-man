@@ -231,3 +231,11 @@ void Game::draw_ants() {
         ant.draw();
     }
 }
+
+// void Game::ants_fire() {
+//     for (auto &ant : ants) {
+//         if(ant.pos.y == player.pos.y) {
+//             a_blasters.emplace_back();
+//         }
+//     }
+// }

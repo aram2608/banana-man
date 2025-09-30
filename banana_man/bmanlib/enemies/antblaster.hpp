@@ -6,7 +6,7 @@
 
 struct AntBlaster {
     // Constructor - Laser - Takes Vector and int
-    AntBlaster(Vector2 position, int fire_pos, int speed);
+    AntBlaster(Vector2 position, int fire_dir, int speed);
     // Function to update laser position
     void update();
     // Function to draw lasers
@@ -16,7 +16,7 @@ struct AntBlaster {
     bool active;
     Vector2 position;
     int speed;
-    int fire_pos;
+    int fire_dir;
 };
 
 #endif

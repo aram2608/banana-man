@@ -1,7 +1,7 @@
 #include "enemies/antblaster.hpp"
 
-AntBlaster::AntBlaster(Vector2 position, int fire_pos, int speed)
-    : position(position), fire_pos(fire_pos), speed(speed) {
+AntBlaster::AntBlaster(Vector2 position, int fire_dir, int speed)
+    : position(position), fire_dir(fire_dir), speed(speed) {
     active = true;
 }
 
@@ -29,7 +29,8 @@ void AntBlaster::update() {
         // Deactivate if the laser has traveled more than a certain distance
         // from fire_pos
         const int max_distance = 500;
-        if (std::abs(position.x - fire_pos) > max_distance) {
+        if (std::abs(position.x - fire_dir) > max_distance) {
             active = false;
         }
     }
+}

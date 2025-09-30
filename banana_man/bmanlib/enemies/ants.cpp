@@ -1,4 +1,5 @@
 #include "enemies/ants.hpp"
+#include "ants.hpp"
 
 Ants::Ants(Vector2 pos, Vector2 size) : pos(pos), size(size) {}
 
@@ -7,3 +8,5 @@ void Ants::draw() {
 }
 
 Rectangle Ants::get_rect() { return {pos.x, pos.y, size.x, size.y}; }
+
+void Ants::fire_laser(int dir) {}

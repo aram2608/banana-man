@@ -4,6 +4,7 @@ add_library(bmanlib
     bmanlib/game/game.cpp
     bmanlib/platforms/platform.cpp
     bmanlib/enemies/ants.cpp
+    bmanlib/enemies/antblaster.cpp
     bmanlib/map/map.cpp
 )
 
